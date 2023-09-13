@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <!-- Page Title and Headings -->
+  <h2>Welcome to the WebDevTracker!</h2>
+  <h3>You can use this to add and delete tasks you are completing</h3><br><br>
+  <title>WebDevTrackr</title>
+</head>
+<body>
+  <div id="app">
+    <h1>WebDevTrackr</h1>
+    <!-- Task Input -->
+    <input v-model="newTodo" @keyup.enter="addTodo" placeholder="Add a new task">
+    <!-- List of Tasks -->
+    <ul>
+        <li v-for="(todo, index) in todos" :key="index" :class="{ completed: todo.completed }">
+            <!-- Checkbox for Task Completion -->
+            <input type="checkbox" v-model="todo.completed">
+            <!-- Task Text -->
+            {{ todo.text }}
+            <!-- Task Creation Date -->
+            <span class="date">{{ todo.date }}</span>
+            <!-- Delete Task Button -->
+            <button @click="deleteTodo(index)">Delete</button>
+        </li>
+    </ul>
+    
+    <h2>Completed Tasks:</h2>
+    <!-- List of Completed Tasks -->
+    <ul>
+        <!-- Generates list item and adds it into the completedTodos array -->
+        <li v-for="(todo, index) in completedTodos" :key="'completed-' + index" :class="{ completed: todo.completed }"> 
+            <!-- Completed Task Text -->
+            {{ todo.text }}
+            <!-- Completed Task Date -->
+            <span class="date">{{ todo.date }}</span>
+            <!-- Delete Completed Task Button -->
+            <button @click="deleteCompleted(index)">Delete</button>
+        </li>
+    </ul>
+  </div>
+
+  <div id="message-app">
+    <h4>Send a Message</h4><br>
+    <!-- Message Form -->
+    <form @submit.prevent="sendMessage">
+        <!-- Recipient Name Input -->
+        <div class="form-group">
+            <label for="recipient">Name:</label>
+            <input type="text" id="recipient" v-model="message.recipient" required>
+        </div>
+        <!-- Recipient Email Input -->
+        <div class="form-group">
+            <label for="recipient">Email:</label>
+            <input type="text" id="recipient" v-model="message.recipient" required>
+        </div>
+        <!-- Message Text Input -->
+        <div class="form-group">
+            <label for="messageText">Message:</label>
+            <textarea id="messageText" v-model="message.text" required></textarea>
+        </div>
+        <br><button type="submit">Send</button>
+    </form>
+  </div>
+  <!-- Vue.js Library -->
+  <script src="https://unpkg.com/vue@3.0.11/dist/vue.global.js"></script>
+  <!-- Vue.js App Logic -->
+  <script>
+    const app = Vue.createApp({
+        data() {
+            return {
+                newTodo: '', // Input for new tasks
+                todos: [], // Array to store tasks
+                message: { // Object to store message data
+                    recipient: '', // Stores the user's name
+                    text: '', // Stores message text
+                },
+            };
+        },
+        computed: {
+            completedTodos() {
+                // Computes a list of completed tasks based on the 'completed' property
+                return this.todos.filter(todo => todo.completed);
+            },
+        },
+        methods: {
+            addTodo() {
+                // Method to add a new task to the 'todos' array
+                if (this.newTodo.trim() === '') return; // Check for empty input
+                this.todos.push({
+                text: this.newTodo, // Task text
+                completed: false, // Task starts as incomplete
+                date: new Date().toLocaleString(), // Timestamp when task is added
+            });
+            this.newTodo = ''; // Clear the input field after adding
+        },
+        deleteTodo(index) {
+            // Delete a task from the 'todos' array
+            this.todos.splice(index, 1); // Remove the task at the specified index
+        },
+        deleteCompleted(index) {
+            // Delete a completed task from 'completedTodos'
+            this.completedTodos.splice(index, 1); // Remove the completed task
+        },
+        sendMessage() {
+            // Send a message
+            },
+        },
+    });
+
+    app.mount('#app'); // Mount the Vue app on the element with id="app"
+  </script>
+</body>
+</html>
